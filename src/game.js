@@ -24,10 +24,10 @@ async function terminateRoom() {
   try {
     isTerminating = true;
 
-    // ✅ Write winner field first
+    //  Write winner field first
     await setDoc(roomRef, { winner: playerName, status: "closed" }, { merge: true });
 
-    // ✅ Delay deletion so others can read winner
+    //  Delay deletion so others can read winner
     setTimeout(async () => {
       try {
         await deleteDoc(roomRef);
