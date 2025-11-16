@@ -5,9 +5,9 @@ import {
   collection,
   onSnapshot,
   deleteDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Flags to prevent duplicate alerts
 let isTerminating = false;
 let hasRedirected = false;
 
@@ -15,13 +15,26 @@ let hasRedirected = false;
 async function terminateRoom() {
   const params = new URLSearchParams(window.location.search);
   const roomId = params.get("room");
-  if (!roomId) return;
+  const playerName = params.get("player") || params.get("host") || "Unknown";
 
+
+  if (!roomId) return;
   const roomRef = doc(db, "rooms", roomId);
 
   try {
-    isTerminating = true; // mark intentional delete
-    await deleteDoc(roomRef);
+    isTerminating = true;
+
+    // ✅ Write winner field first
+    await setDoc(roomRef, { winner: playerName, status: "closed" }, { merge: true });
+
+    // ✅ Delay deletion so others can read winner
+    setTimeout(async () => {
+      try {
+        await deleteDoc(roomRef);
+      } catch (err) {
+        console.error("Error deleting room:", err);
+      }
+    }, 3000);
 
     if (!hasRedirected) {
       hasRedirected = true;
@@ -44,9 +57,17 @@ function watchRoomExistence(roomId) {
       if (!snapshot.exists()) {
         if (!isTerminating && !hasRedirected) {
           hasRedirected = true;
-          alert("Room no longer exists.");
+          alert("You lost!");
           window.location.href = "index.html";
         }
+        return;
+      }
+
+      const data = snapshot.data();
+      if (data?.winner && !isTerminating && !hasRedirected) {
+        hasRedirected = true;
+        alert(`You lost! ${data.winner} won.`);
+        window.location.href = "index.html";
       }
     },
     (error) => {
@@ -66,7 +87,6 @@ async function loadRoom(roomId) {
     return;
   }
 
-  // Show room ID in UI
   const idText = document.getElementById("gameIdText");
   if (idText) idText.innerText = roomId;
 
@@ -219,6 +239,8 @@ if (stopBtn) {
   stopBtn.addEventListener("click", async () => {
     const params = new URLSearchParams(window.location.search);
     const roomId = params.get("room");
+    const playerName = document.getElementById("clasherName")?.value || "Unknown";
+
     if (!roomId) {
       alert("No room ID found.");
       return;
@@ -228,7 +250,16 @@ if (stopBtn) {
 
     try {
       isTerminating = true;
-      await deleteDoc(roomRef);
+      await setDoc(roomRef, { winner: playerName, status: "closed" }, { merge: true });
+
+      setTimeout(async () => {
+        try {
+          await deleteDoc(roomRef);
+        } catch (err) {
+          console.error("Error deleting room:", err);
+        }
+      }, 3000);
+
       if (!hasRedirected) {
         hasRedirected = true;
         alert("Bingo terminated");
