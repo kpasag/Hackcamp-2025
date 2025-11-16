@@ -10,54 +10,67 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 
-<body class="m-0">
-    <main class="bg-pink-200">
+<body class="bg-pink-200">
+    <main>
         <div id="navbar"></div>
-        <div class="flex justify-center my-12">
-            <h1 class=" text-2xl">Create a Room</h1>
+        <div class="flex justify-center my-20">
+            <h1 class="text-2xl">Create a Room</h1>
         </div>
-        <section class="bg-blue-400 flex flex-col gap-y-8 justify-center mx-auto max-w-full md:w-1/2 md:h-1/2">
-            <div class="flex ml-3 md:ml-20 mt-12 md:gap-x-12">
-                <h2 class="text-left"> Enter your clasher name: </h2>
-                <input class="mx-5" id="clasherName" type="text">
-            </div>
-            <div class="flex ml-3 md:ml-20 mx-5 md:gap-x-20">
-                <h2> Choose your scenarios: </h2>
-                <div class="gap-x-5">
-                    <button class="py-2 px-3 bg-blue-700 text-white font-sans"> Scenario Bank </button>
-                    <button class="py-2 px-3 bg-green-700 text-white font-sans"> Add Scenarios </button>
-                </div>
-            </div>
-            <div class="flex ml-3 md:ml-20 m-5 md:gap-x-20">
-                <div>
-                    <h2> Choose your grid size: </h2>
-                </div>
-                <div class="flex flex-col">
+        <section class="bg-blue-400 mx-auto md:w-1/2 p-10">
+            <div class="flex gap-x-20 ml-3 md:ml-20">
+
+                <!-- Left column -->
+                <div class="flex flex-col gap-y-10 pt-1">
                     <div>
-                        <input type="radio" id="gridDifficult">
-                        <label for="gridDifficult"> 6 x 6 (Difficult) </label><br>
+                        <h2>Enter your clasher name:</h2>
                     </div>
+
                     <div>
-                        <input type="radio" id="gridNormal">
-                        <label for="gridNormal"> 4 x 4 (Normal) </label><br>
+                        <h2>Choose the grid size:</h2>
                     </div>
-                    <div>
-                        <input type="radio" id="gridEasy">
-                        <label for="gridNormal"> 3 x 3 (Easy) </label><br>
+
+                    <div class="pt-12">
+                        <h2>Custom Scenarios:</h2>
+                        <p class="text-xs text-gray-700">Use commas to separate scenarios</p>
                     </div>
                 </div>
+
+                <!-- Right column -->
+                <div class="flex flex-col gap-y-8">
+                    <!-- Input name-->
+                    <div class="flex items-center">
+                        <input class="border p-2 rounded w-60" id="clasherName" type="text">
+                    </div>
+                    <!-- Grid sizes -->
+                    <div class="flex flex-col gap-y-1">
+                        <label><input type="radio" name="gridSize" id="gridDifficult"> 6 × 6 (Difficult)</label>
+                        <label><input type="radio" name="gridSize" id="gridNormal"> 4 × 4 (Easy)</label>
+                        <label><input type="radio" name="gridSize" id="gridEasy"> 2 × 2 (Very Easy)</label>
+                    </div>
+
+                    <!-- Scenarios -->
+                    <div class="flex flex-row items-baseline">
+                        <div class="flex items-center gap-x-2">
+                            <input id="customCheck" type="checkbox" class="h-5 w-5">
+                        </div>
+                        <textarea id="customScenariosInput"
+                            class="hidden w-60 h-20 border border-gray-400 rounded-md p-2 ml-4 mt-2"
+                            placeholder="Enter your unique scenarios here!"></textarea>
+                    </div>
+
+                </div>
+
             </div>
-            <div class="mx-auto mb-12">
-                <button class="py-3 mx-auto px-10 rounded-2xl bg-green-700 text-white border-2 font-sans">
+            <!-- Button -->
+            <div class="flex justify-center mt-12">
+                <button class="py-3 px-10 rounded-2xl bg-green-400 text-white border-2 font-sans">
                     Start Clash
                 </button>
             </div>
-            <div class="mx-auto mb-12">
-
         </section>
-
     </main>
-    <script src="navbar.js"></script>
 </body>
+<script src="./src/room.js"></script>
+<script src="navbar.js"></script>
 
 </html>

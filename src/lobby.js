@@ -38,3 +38,4 @@ document.getElementById("startGameBtn").onclick = async () => {
     "gameState.isStarted": true,
   });
 };
+
