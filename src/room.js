@@ -15,14 +15,14 @@ const createBtn = document.getElementById("createRoomBtn");
 const checkbox = document.getElementById("customCheck");
 const textarea = document.getElementById("customScenariosInput");
 
-// CUSTOM CHECKBOX LOGIC
+// Custom checkbox logic
 if (checkbox && textarea) {
   checkbox.addEventListener("change", () => {
     textarea.classList.toggle("hidden", !checkbox.checked);
   });
 }
 
-// JOIN ROOM
+// Join room
 if (joinBtn) {
   console.log("Join button detected.");
 
@@ -32,31 +32,37 @@ if (joinBtn) {
     const name = document.getElementById("clasherName").value.trim();
     const roomCode = document.getElementById("roomCode").value.trim();
 
-    if (!name) return alert("Enter your name");
-    if (!roomCode) return alert("Enter a room code");
+    if (!name) {
+      alert("Enter your name");
+      return;
+    }
 
-    // Check if room exists
+    if (!roomCode) {
+      alert("Enter a room code");
+      return;
+    }
+
     const roomRef = doc(db, "rooms", roomCode);
     const roomSnap = await getDoc(roomRef);
 
     if (!roomSnap.exists()) {
       alert("Room does not exist!");
       window.location.href = "index.html";
+      return;
     }
 
-    // Add player to room subcollection
+    // Add player to players subcollection
     const playerRef = doc(db, "rooms", roomCode, "players", name);
     await setDoc(playerRef, {
       name,
       joinedAt: serverTimestamp(),
     });
 
-    // Redirect to game page
     window.location.href = `game.html?room=${roomCode}&player=${name}`;
   });
 }
 
-// CREATE ROOM
+// Create room
 if (createBtn) {
   console.log("Create button detected.");
 
@@ -65,12 +71,21 @@ if (createBtn) {
 
     const name = document.getElementById("clasherName").value.trim();
 
-    // Grid size
+    // Require name
+    if (!name) {
+      alert("Enter your name");
+      return;
+    }
+
+    // Require grid size
     let selectedGrid = document.querySelector("input[name='gridSize']:checked");
-    if (!selectedGrid) return alert("Select a grid size!");
+    if (!selectedGrid) {
+      alert("Select a grid size!");
+      return;
+    }
     selectedGrid = selectedGrid.id;
 
-    // Base scenarios
+    // Default scenarios
     let scenarios = [
       "Professor says 'as you can see'",
       "Someone walks in late",
@@ -125,26 +140,31 @@ if (createBtn) {
       "Class groans at a pop quiz",
     ];
 
-    // Custom scenarios (optional)
+    // Custom scenarios
     if (checkbox && checkbox.checked) {
       const custom = textarea.value
         .split(",")
         .map((x) => x.trim())
         .filter(Boolean);
-
       scenarios = scenarios.concat(custom);
     }
 
-    // Create room code
+    // Create room ID
     const roomId = Math.floor(1000 + Math.random() * 9000).toString();
 
-    // Save to Firestore
+    // Create room
     await setDoc(doc(db, "rooms", roomId), {
       hostName: name,
       createdAt: serverTimestamp(),
       gridSize: selectedGrid,
       phrases: scenarios,
       isActive: true,
+    });
+
+    // Add host to players list
+    await setDoc(doc(db, "rooms", roomId, "players", name), {
+      name: name,
+      joinedAt: serverTimestamp(),
     });
 
     // Redirect host
