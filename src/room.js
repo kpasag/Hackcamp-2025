@@ -1,30 +1,84 @@
 import { db } from "./firebaseConfig.js";
 import {
-  doc, setDoc, collection, serverTimestamp
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Create room button
-const createBtn = document.getElementById("createRoomBtn");
+console.log("🔥 room.js loaded");
 
+// =============================
+// DOM ELEMENTS
+// =============================
+const joinBtn = document.getElementById("joinRoomBtn");
+const createBtn = document.getElementById("createRoomBtn");
 const checkbox = document.getElementById("customCheck");
 const textarea = document.getElementById("customScenariosInput");
 
-checkbox.addEventListener("change", () => {
-  textarea.classList.toggle("hidden", !checkbox.checked);
-});
+// =============================
+// CUSTOM CHECKBOX LOGIC
+// =============================
+if (checkbox && textarea) {
+  checkbox.addEventListener("change", () => {
+    textarea.classList.toggle("hidden", !checkbox.checked);
+  });
+}
 
+// =============================
+// JOIN ROOM
+// =============================
+if (joinBtn) {
+  console.log("Join button detected.");
 
-// CLICK HANDLER
-createBtn.addEventListener("click", async () => {
-  const name = document.getElementById("clasherName").value.trim();
+  joinBtn.addEventListener("click", async () => {
+    console.log("JOIN CLICKED");
 
-  // Get grid size
-  let selectedGrid = document.querySelector("input[name='gridSize']:checked");
-  if (!selectedGrid) return alert("Select a grid size!");
+    const name = document.getElementById("clasherName").value.trim();
+    const roomCode = document.getElementById("roomCode").value.trim();
 
-  selectedGrid = selectedGrid.id; // gridDifficult, gridNormal, gridEasy
+    if (!name) return alert("Enter your name");
+    if (!roomCode) return alert("Enter a room code");
 
-    // Always include default scenarios
+    // Check if room exists
+    const roomRef = doc(db, "rooms", roomCode);
+    const roomSnap = await getDoc(roomRef);
+
+    if (!roomSnap.exists()) {
+      alert("Room does not exist!");
+      return;
+    }
+
+    // Add player to room subcollection
+    const playerRef = doc(db, "rooms", roomCode, "players", name);
+    await setDoc(playerRef, {
+      name,
+      joinedAt: serverTimestamp(),
+    });
+
+    // Redirect to game page
+    window.location.href = `game.html?room=${roomCode}&player=${name}`;
+  });
+}
+
+// =============================
+// CREATE ROOM
+// =============================
+if (createBtn) {
+  console.log("Create button detected.");
+
+  createBtn.addEventListener("click", async () => {
+    console.log("CREATE CLICKED");
+
+    const name = document.getElementById("clasherName").value.trim();
+
+    // Grid size
+    let selectedGrid = document.querySelector("input[name='gridSize']:checked");
+    if (!selectedGrid) return alert("Select a grid size!");
+    selectedGrid = selectedGrid.id;
+
+    // Base scenarios
     let scenarios = [
       "Professor says 'as you can see'",
       "Someone walks in late",
@@ -42,7 +96,7 @@ createBtn.addEventListener("click", async () => {
       "Technical difficulties with the projector",
       "A student eats loudly in the back row",
       "Professor goes off on a tangent",
-      "Someone asks \"Is this going to be on the test?\"",
+      'Someone asks "Is this going to be on the test?"',
       "The Wi-Fi goes down during an important moment",
       "Professor loses track of time and ends late",
       "A student nervously answers a question incorrectly",
@@ -57,52 +111,51 @@ createBtn.addEventListener("click", async () => {
       "Professor accidentally skips a whole section of the lecture",
       "A student asks a question that stumps the professor",
       "Classmates exchange memes during class",
-      "A random loud sound interrupts the class (e.g., sirens, construction noise)",
+      "A random loud sound interrupts the class (sirens, construction noise)",
       "Someone yawns loudly during a lecture",
       "The lecture is about to end, and someone asks for clarification",
       "Professor misplaces their lecture notes or slides",
       "A student complains about the heat/cold in the room",
-      "Someone asks a question that could have easily been Googled",
-      "Professor introduces a new term that no one understands",
-      "Someone uses a phrase like “in conclusion” but keeps talking for another 10 minutes",
-      "Professor starts a sentence and forgets the point halfway through",
+      "Someone asks a question that could have been Googled",
+      "Professor introduces a new term nobody understands",
+      "Someone says 'in conclusion' but talks 10 more minutes",
       "The projector shows the wrong slide",
-      "A student explains something in a way that no one understands",
-      "Someone accidentally calls the professor by the wrong name",
-      "Someone makes a sarcastic remark that everyone laughs at",
-      "Class gets sidetracked by a pop culture reference",
-      "A student arrives right before class ends",
-      "Professor says \"Let's take a 5-minute break\" and it turns into 15 minutes",
-      "Someone uses the phrase \"I'm not an expert, but...\"",
-      "A student wears something ridiculously out of season (e.g., summer attire in winter)",
-      "The professor gets interrupted by a random knock on the door",
-      "Someone asks, \"Is this going to be on the final exam?\" during the lecture",
-      "Someone gets caught doodling during class",
-      "The class collectively groans after a pop quiz is announced",
+      "A student explains something nobody understands",
+      "Someone calls the professor the wrong name",
+      "Random sarcastic remark gets everyone laughing",
+      "Class gets sidetracked by pop culture",
+      "Someone arrives right before class ends",
+      "A 5-minute break becomes 15 minutes",
+      "Someone says 'I'm not an expert, but...'",
+      "Someone wears completely wrong-season clothes",
+      "Random knock interrupts class",
+      "Someone doodles during class",
+      "Class groans at a pop quiz",
     ];
 
-    // If custom checkbox is checked, add more
-    if (checkbox.checked) {
-    const custom = textarea.value
+    // Custom scenarios (optional)
+    if (checkbox && checkbox.checked) {
+      const custom = textarea.value
         .split(",")
-        .map(x => x.trim())
+        .map((x) => x.trim())
         .filter(Boolean);
 
-    scenarios = scenarios.concat(custom);
+      scenarios = scenarios.concat(custom);
     }
 
-  // Make room code
-  const roomId = Math.floor(1000 + Math.random() * 9000).toString();
+    // Create room code
+    const roomId = Math.floor(1000 + Math.random() * 9000).toString();
 
-  // Firestore: create room document
-  await setDoc(doc(db, "rooms", roomId), {
-    hostName: name,
-    createdAt: serverTimestamp(),
-    gridSize: selectedGrid,
-    phrases: scenarios,
-    isActive: true
+    // Save to Firestore
+    await setDoc(doc(db, "rooms", roomId), {
+      hostName: name,
+      createdAt: serverTimestamp(),
+      gridSize: selectedGrid,
+      phrases: scenarios,
+      isActive: true,
+    });
+
+    // Redirect host
+    window.location.href = `game.html?room=${roomId}&host=${name}`;
   });
-
-  // Redirect
-  window.location.href = `game.html?room=${roomId}&host=${name}`;
-});
+}

@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
-</head>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-<body class="bg-pink-200">
+  <body class="bg-pink-200">
     <main>
-        <div id="navbar"></div>
-        <div class="flex justify-center my-20">
-            <h1 class="text-2xl">Join a Room</h1>
-        </div>
-        <section class="bg-blue-400 mx-auto md:w-1/2 p-10">
-            <div class="flex gap-x-20 ml-3 md:ml-20">
-                <!-- Left column -->
-                <div class="flex flex-col gap-y-12 pt-1">
-                    <h2 class="whitespace-nowrap">Enter your clasher name:</h2>
-                    <h2 class="whitespace-nowrap">Enter the room code:</h2>
-                </div>
-                <!-- RRight column -->
-                <div class="flex flex-col gap-y-10">
-                    <input class="border p-2 rounded w-60" id="clasherName" type="text">
-                    <input class="border p-2 rounded w-60" id="roomCode" type="text">
-                    <!-- Button -->
-                    <div class="flex justify-center mt-6">
-                        <button class="py-3 px-10 rounded-2xl bg-green-400 text-white border-2">
-                            Start Clash
-                        </button>
-                    </div>
-                </div>
+      <div id="navbar"></div>
+      <div class="flex justify-center my-20">
+        <h1 class="text-2xl">Join a Room</h1>
+      </div>
+      <section class="bg-blue-400 mx-auto md:w-1/2 p-10">
+        <div class="flex gap-x-20 ml-3 md:ml-20">
+          <!-- Left column -->
+          <div class="flex flex-col gap-y-12 pt-1">
+            <h2 class="whitespace-nowrap">Enter your clasher name:</h2>
+            <h2 class="whitespace-nowrap">Enter the room code:</h2>
+          </div>
+          <!-- RRight column -->
+          <div class="flex flex-col gap-y-10">
+            <input
+              class="border p-2 rounded w-60"
+              id="clasherName"
+              type="text"
+            />
+            <input class="border p-2 rounded w-60" id="roomCode" type="text" />
+            <!-- Button -->
+            <div class="flex justify-center mt-6">
+              <button
+                class="py-3 px-10 rounded-2xl bg-green-400 text-white border-2"
+                id="joinRoomBtn"
+              >
+                Start Clash
+              </button>
             </div>
-
-        </section>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="navbar.js"></script>
-</body>
-<script type="module" src="./src/room.js"></script>
-
-
-
+  </body>
+  <script type="module" src="./src/room.js"></script>
 </html>
