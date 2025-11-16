@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+    <main>
+        <div class="flex justify-center my-20">
+            <h1 class="text-2xl">Create a Room</h1>
+        </div>
+        <section class="bg-blue-400 flex flex-col gap-y-8 justify-center mx-auto max-w-full md:w-1/2 md:h-1/2">
+            <div class="flex ml-3 md:ml-20 mt-12 md:gap-x-12">
+                <h2 class="text-left"> Enter your clasher name: </h2>
+                <input class="mx-5" id="clasherName" type="text">
+            </div>
+            <div class="flex ml-3 md:ml-20 mx-5 md:gap-x-20">
+                <h2> Choose your scenarios: </h2>
+                <div class="gap-x-5">
+                    <button class="py-2 px-3 bg-blue-700 text-white"> Scenario Bank </button>
+                    <button class="py-2 px-3 bg-green-700 text-white"> Add Scenarios </button>
+                </div>
+            </div>
+            <div class="flex ml-3 md:ml-20 m-5 md:gap-x-20">
+                <div>
+                    <h2> Choose your grid size: </h2>
+                </div>
+                <div class="flex flex-col">
+                    <div>
+                        <input type="radio" id="gridDifficult">
+                        <label for="gridDifficult"> 6 x 6 (Difficult) </label><br>
+                    </div>
+                    <div>
+                        <input type="radio" id="gridNormal">
+                        <label for="gridNormal"> 4 x 4 (Normal) </label><br>
+                    </div>
+                    <div>
+                        <input type="radio" id="gridEasy">
+                        <label for="gridNormal"> 3 x 3 (Easy) </label><br>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-auto mb-12">
+                <button class="py-3 mx-auto px-10 rounded-2xl bg-green-700 text-white border-2">
+                    Start Clash
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+
+</html>
